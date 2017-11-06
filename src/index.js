@@ -1,32 +1,38 @@
 const puppeteer = require('puppeteer');
 const CREDS = require('./creds');
 
-const USERNAME_SELECTOR = '#username';
-const PASSWORD_SELECTOR = '#password';
-const BUTTON_SELECTOR = '#regularsubmit';
-const BOOK_SELECTOR = '#ebookID558492';
+const DELAY = 1000;
+const $USERNAME = '#$username';
+const $PASSWORD = '#password';
+const $BUTTON = '#regularsubmit';
+const $BOOK = '#ebookID558492';
+const $PAGE_LAYOUT = 'body > div > div:nth-child(5) > div > div.leftbuttons > a.activelearn.button.viewtoggle.active';
+const $PAGE_NUMBER = 'body > div > div:nth-child(5) > div > div.rightbuttons > div.quicknav.control > input[type="text"]';
 
-const login = async (page, delay = 2000) => {
+const login = async (page, delay = DELAY) => {
   await page.waitFor(delay);
-  await page.click(USERNAME_SELECTOR);
+  await page.click($USERNAME);
   await page.keyboard.type(CREDS.username);
-  await page.click(PASSWORD_SELECTOR);
+  await page.click($PASSWORD);
   await page.keyboard.type(CREDS.password);
-  await page.click(BUTTON_SELECTOR);
+  await page.click($BUTTON);
   await page.waitForNavigation();
 };
 
-const chooseBook = async (page, delay = 1000) => {
+const chooseBook = async (page, delay = DELAY) => {
   await page.waitFor(delay);
-  await page.click(BOOK_SELECTOR);
-  await page.waitForNavigation();
+  await page.click($BOOK);
 };
 
 const main = async ({ url }) => {
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
-  await page.goto(url);
 
+  page.on('targetcreated', async (target) => {
+    console.log('POPUP', target);
+  });
+
+  await page.goto(url);
   await login(page);
   await chooseBook(page);
 };
