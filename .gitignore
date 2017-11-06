@@ -1,0 +1,14 @@
+node_modules
+config
+.env
+.docker-command
+deploy.sh
+run-migration.sh
+trigger-build.sh
+npm-debug.log
+yarn-error.log
+coverage
+.nyc_output
+.kube/
+logs
+creds.js
